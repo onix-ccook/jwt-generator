@@ -21,3 +21,4 @@ __pycache__/
 # my stuff
 env-tgen/
 run.sh
+config.conf
