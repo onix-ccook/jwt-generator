@@ -1,0 +1,108 @@
+<html lang="en">
+    <head>
+        <title>FusionReady Token Generator</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <style>
+            div.container {
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+            label {
+                color: rgb(190, 64, 52);
+                font-weight: bold;
+            }
+            .icon {
+                padding: 0;
+                margin: 0;
+                vertical-align: middle;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <img src="{{ url_for('static', filename='FusionReadyLogoXL.png') }}" class="img-fluid" alt="FusionReady Logo">
+            <h2>JSON Web Token (JWT) Generator</h2>
+            <p>Welcome to the FusionReady Token Generator. Enter the info and click "Generate My Token!". Copy your token and go!</p>
+            <p class="">
+                <hr size="1" />
+                <small>
+                <b>What is a JSON Web Token?</b>
+                <br/>JSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. Authorization is the most common scenario for using JWT. Each request will include the JWT, allowing the user to access routes, services, and resources that are permitted with that token.
+                </small>
+                <hr size="1" />
+            </p>
+            <form action="" method="post" role="form">
+                {{ form.csrf }}
+                <div class="form-group">
+                    <label for="issuer" class="align-middle">JWT Issuer <small>*</small></label>
+                    <input type="text" class="form-control" id="issuer" name="issuer" placeholder="Paste the JWT issuer" />
+                    <br/>
+                    <label for="username">Username <small>*</small></label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Paste the user name" />
+                    <br/>
+                    <label for="key">Signing Key <small>*</small></label>
+                    <input type="text" class="form-control" id="key" name="key" placeholder="Paste the issuer's signing key" />
+                </div>
+                <button type="submit" class="btn btn-info">Generate My Token!</button>
+            </form>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="input-group row align-items-center" style="padding-top: 25px; margin-left: 0px; margin-right: 0px;">
+                <!-- <textarea class="form-control" rows="4">{{ message[1] }}</textarea> -->
+                <div class="alert alert-info text-break col-11">{{ message[1] }}</div>
+                <div class="col-1">
+                    <button class="btn btn-default btn-copy js-tooltip js-copy" type="button" data-toggle="tooltip" 
+                        title="Copy to Clipboard" data-copy="{{ message[1] }}">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                            version="1.1" width="32" height="32" >
+                            <path d="M17,9H7V7H17M17,13H7V11H17M14,17H7V15H14M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script>
+            function copyToClipboard(text, el) {
+                var copyTest = document.queryCommandSupported('copy');
+                var elOriginalText = el.attr('data-original-title');
+
+                if (copyTest === true) {
+                    var copyTextArea = document.createElement("textarea");
+                    copyTextArea.value = text;
+                    document.body.appendChild(copyTextArea);
+                    copyTextArea.select();
+                    try {
+                        var successful = document.execCommand('copy');
+                        var msg = successful ? 'Copied!' : 'Whoops, not copied!';
+                        el.attr('data-original-title', msg).tooltip('show');
+                    } catch (err) {
+                        console.log('Oops, unable to copy');
+                    }
+                    document.body.removeChild(copyTextArea);
+                    el.attr('data-original-title', elOriginalText);
+                } else {
+                    // Fallback if browser doesn't support .execCommand('copy')
+                    window.prompt("Copy to clipboard: Ctrl+C or Command+C, Enter", text);
+                }
+            }
+
+            $(document).ready(function() {
+                $('.js-tooltip').tooltip();
+                $('.js-copy').click(function() {
+                    var text = $(this).attr('data-copy');
+                    var el = $(this);
+                    copyToClipboard(text, el);
+                });
+            });
+        </script>
+    </body>
+</html>
